@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"os"
 
-	m "github.com/namcnab/plant_api/model" // Import the models package
+	m "github.com/namcnab/plant_api/internal/model" // Import the package that contains the definition of GlossaryEntry
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
