@@ -5,12 +5,18 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/joho/godotenv"
 	m "github.com/namcnab/plant_api/internal/model" // Import the package that contains the definition of GlossaryEntry
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
-func initializeDB() (*gorm.DB, error) {
+func InitializeDB() (*gorm.DB, error) {
+	err := godotenv.Load()
+
+	if err != nil {
+		return nil, errors.New("failed to load environment variables")
+	}
 
     // Retrieve database configuration from environment variables
 	host := os.Getenv("DB_HOST")
@@ -20,7 +26,7 @@ func initializeDB() (*gorm.DB, error) {
     dbname := os.Getenv("DB_NAME")
     sslmode := os.Getenv("DB_SSLMODE")
 	
-    dsn := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=%s", host, port, user, password, dbname, sslmode)
+	dsn := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=%s", host, port, user, password, dbname, sslmode)
 
     // Connect to the database using GORM
     db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
@@ -30,14 +36,15 @@ func initializeDB() (*gorm.DB, error) {
 
     return db, nil
 }
-// q: how to resolve the error in the following function?
-// a: import the models package 
 
-func getAllGlossaryEntries(db *gorm.DB) ([]m.GlossaryEntry, error) {
-    var entries []m.GlossaryEntry
-    result := db.Find(&entries)
+func GetAllGlossaryEntries(db *gorm.DB) ([]m.Glossary, error) {
+    var glossary []m.Glossary
+    // Retrieve all entries from the public.glossary table
+    result := db.Find(&glossary)
+
     if result.Error != nil {
-        return nil, result.Error
+        return nil, errors.New("failed to retrieve glossary entries")
     }
-    return entries, nil
+
+    return glossary, nil
 }
