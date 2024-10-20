@@ -45,3 +45,30 @@ func main() {
         fmt.Printf("Error starting server: %s\n", err)
     }
 }
+
+func capitalizeWords(s string) string {
+    runes := []rune(s)
+    capitalizeNext := true
+
+    for i, r := range runes {
+        if capitalizeNext {
+            runes[i] = unicode.ToUpper(r)
+            capitalizeNext = false
+        }
+        if unicode.IsSpace(r) {
+            capitalizeNext = true
+        }
+    }
+
+    return string(runes)
+}
+
+func capitalizeSentence(s string) string {
+    runes := []rune(s)
+    runes[0] = unicode.ToUpper(runes[0])
+    return string(runes)
+}
+
+func removeNewlines(s string) string {
+    return strings.ReplaceAll(s, "\n", "")
+}
